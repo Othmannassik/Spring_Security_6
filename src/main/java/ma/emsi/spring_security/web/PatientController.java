@@ -20,10 +20,10 @@ public class PatientController {
 
     @GetMapping("/")
     public String Home(){
-        return "redirect:/patients";
+        return "redirect:/user/patients";
     }
 
-    @GetMapping(path = "patients")
+    @GetMapping(path = "/user/patients")
     public String AfficherPatients(Model model,
                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                 @RequestParam(name = "size", defaultValue = "5") int size,
@@ -36,28 +36,28 @@ public class PatientController {
         return "patients";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/admin/delete")
     public String Delete(Long id, int page, String keyword){
         patientRepository.deleteById(id);
-        return "redirect:/patients?page="+page+"&keyword="+keyword;
+        return "redirect:/user/patients?page="+page+"&keyword="+keyword;
     }
 
-    @GetMapping("/formPatient")
+    @GetMapping("/admin/formPatient")
     public String formPatient(Model model ){
         model.addAttribute("patient",new Patient());
         return "formPatient";
     }
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/admin/save")
     public String save(@Valid Patient patient, BindingResult bindingResult, Model model,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "") String keyword){
         if (bindingResult.hasErrors()) return "formPatient";
         patientRepository.save(patient);
-        return "redirect:/patients?page="+page+"&keyword="+keyword;
+        return "redirect:/user/patients?page="+page+"&keyword="+keyword;
     }
 
-    @GetMapping("/editPatient")
+    @GetMapping("/admin/editPatient")
     public String editPatient(Long id, int page, String keyword,Model model){
         Patient patient=patientRepository.findById(id).orElse(null);
         if(patient == null) throw new RuntimeException("Patient Inexistant");
