@@ -1,5 +1,6 @@
 package ma.emsi.spring_security;
 
+import ma.emsi.spring_security.security.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +18,7 @@ public class SpringSecurityApplication {
         SpringApplication.run(SpringSecurityApplication.class, args);
     }
 
-    @Bean
+    //@Bean
     CommandLineRunner commandLineRunner(JdbcUserDetailsManager jdbcUserDetailsManager){
         PasswordEncoder passwordEncoder = passwordEncoder();
         return args -> {
@@ -33,6 +34,22 @@ public class SpringSecurityApplication {
           jdbcUserDetailsManager.createUser(
                   User.withUsername("admin1").password(passwordEncoder.encode("123")).roles("USER","ADMIN").build()
           );
+        };
+    }
+
+    //@Bean
+    CommandLineRunner commandLineRunnerUsersDetails(UserService userService)
+    {
+        return args -> {
+            userService.saveUser("user2","123","user@gmail.com","123");
+            userService.saveUser("admin2","123","admin@gmail.com","123");
+
+            userService.saveRole("USER");
+            userService.saveRole("ADMIN");
+
+            userService.addRoleToUser("user2","USER");
+            userService.addRoleToUser("admin2","USER");
+            userService.addRoleToUser("admin2","ADMIN");
         };
     }
     @Bean
